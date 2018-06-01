@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.util.Base64;
+import java.util.HashMap;
 
 
 @Controller
@@ -77,9 +78,10 @@ public class UserController {
 
             return "redirect:/";
         }
-
-        String error = "The username has been previously registered";
-        model.addAttribute("error", error);
+        //Display back error if the input username is already registered 
+        HashMap<String,String> errors= new HashMap<>();
+        errors.put("username","The username has been previously registered");
+        model.addAttribute("errors", errors);
         return "users/signup";
     }
 
