@@ -60,7 +60,26 @@ public class UserController {
     public String signUpUser(@RequestParam("username") String username,
                              @RequestParam("password") String password,
                                HttpSession session,Model model) {
-        if (userService.getByName(username).equals(null)) {
+
+        HashMap<String,String> errors= new HashMap<>();
+
+        if (userService.getByName(username) == null) {
+
+            if (username.length() < 6 )  {
+                errors.put("username","needs to be 6 characters or longer");
+            }
+
+           if (password.length() < 6) {
+
+               errors.put("password","needs to be 6 characters or longer");
+           }
+
+           if (!errors.isEmpty()) {
+
+               model.addAttribute("errors", errors);
+               return "users/signup";
+
+           }
             // We'll first assign a default photo to the user
             ProfilePhoto photo = new ProfilePhoto();
             profilePhotoService.save(photo);
@@ -78,8 +97,7 @@ public class UserController {
 
             return "redirect:/";
         }
-        //Display back error if the input username is already registered 
-        HashMap<String,String> errors= new HashMap<>();
+        //Display back error if the input username is already registered
         errors.put("username","The username has been previously registered");
         model.addAttribute("errors", errors);
         return "users/signup";
