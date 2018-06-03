@@ -1,6 +1,7 @@
 package com.upgrad.ImageHoster.service;
 
 import com.upgrad.ImageHoster.common.ImageManager;
+import com.upgrad.ImageHoster.model.Comment;
 import com.upgrad.ImageHoster.model.Image;
 import org.springframework.stereotype.Service;
 
@@ -41,4 +42,10 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public void update(Image newImage) { imageManager.updateImage(newImage); }
+
+    @Override
+    public void updateComments(Comment comments) { imageManager.updateComment(comments);}
+
+    @Override
+    public List<Comment> getCommentsById(int id) {return imageManager.getCommentsById(id); }
 }

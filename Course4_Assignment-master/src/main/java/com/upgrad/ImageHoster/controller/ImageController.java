@@ -1,5 +1,6 @@
 package com.upgrad.ImageHoster.controller;
 
+import com.upgrad.ImageHoster.model.Comment;
 import com.upgrad.ImageHoster.model.Image;
 import com.upgrad.ImageHoster.model.Tag;
 import com.upgrad.ImageHoster.model.User;
@@ -141,10 +142,12 @@ public class ImageController {
         Image image = imageService.getByIdWithJoin(id);
         image.setNumView(image.getNumView() + 1);
         imageService.update(image);
+        List<Comment> comments = imageService.getCommentsById(id);
 
         model.addAttribute("user", image.getUser());
         model.addAttribute("image", image);
         model.addAttribute("tags", image.getTags());
+        model.addAttribute("comments",comments);
 
         return "images/image";
     }
@@ -164,6 +167,28 @@ public class ImageController {
 
         return "redirect:/";
     }
+
+    /**
+     * This controller shows a specific image with submitted comments
+     * @param id the id of the image that we want to add comments for it
+     * @param model used to pass data to the view for rendering
+     *
+     * @return view for the image that was requested with comments submitted
+     */
+
+    @RequestMapping(value="/image/{id}/comments/create",method = RequestMethod.POST)
+    public String submit(@RequestParam("comment") String text,
+                         @PathVariable int id, Model model) throws IOException {
+        Image image = imageService.getByIdWithJoin(id);
+        image.setNumView(image.getNumView() + 1);
+        imageService.update(image);
+        Comment comments = new Comment(text,id);
+        imageService.updateComments(comments);
+        imageService.update(image);
+
+        return "redirect:/images/" + id;
+    }
+
 
     /**
      * This controller method displays an image edit form, so the user

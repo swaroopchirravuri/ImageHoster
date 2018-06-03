@@ -1,5 +1,6 @@
 package com.upgrad.ImageHoster.common;
 
+import com.upgrad.ImageHoster.model.Comment;
 import com.upgrad.ImageHoster.model.Image;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
@@ -180,5 +181,43 @@ public class ImageManager extends SessionManager {
         Session session = openSession();
         session.update(updatedImage);
         commitSession(session);
+    }
+
+    /**
+     * This method save an image's comments in the database
+     *
+     * @param comments an Comment object with the updated data
+     */
+
+    public void updateComment(final Comment comments) {
+        Session session = openSession();
+        session.save(comments);
+        commitSession(session);
+    }
+
+    /**
+     * This method retrieves an image comments with image id.
+     *
+     * @param id the tag that we want to retrieve image comments by
+     *
+     * @return a list of Image objects that we retrieved by its id
+     */
+
+    public List<Comment> getCommentsById(int id) {
+        Session session = openSession();
+
+        try {
+            List<Comment> comments = (List<Comment>) session.createCriteria(Comment.class)
+                    .add(Restrictions.eq("image_id", id))
+                    .list();
+
+            commitSession(session);
+
+            return comments;
+        } catch(HibernateException e) {
+            System.out.println("unable to retrieve comments from database by its imageid");
+        }
+
+        return null;
     }
 }
